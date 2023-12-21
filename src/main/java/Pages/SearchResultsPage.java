@@ -9,7 +9,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
+import org.openqa.selenium.JavascriptExecutor;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,8 @@ public class SearchResultsPage extends BaseTest {
     @FindBy(css = ".btn-container")
     List<WebElement> itemCartButtons;
 
+    @FindBy(css = "a[href='/viewcart.cfm']")
+    WebElement viewCartButton;
     String search_url;
     @FindBy(xpath = "//*[@id=\"ProductBoxContainer\"]/div[1]/a/span")
     List<WebElement> products;
@@ -61,9 +63,12 @@ public class SearchResultsPage extends BaseTest {
     }
 
     public CartPage goToCart() {
-        new WebDriverWait(driver, Duration.ofSeconds(60))
+        ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, 0);");
+        new WebDriverWait(driver, Duration.ofSeconds(15))
                 .ignoring(WebDriverException.class)
-                .until(ExpectedConditions.visibilityOfElementLocated(new By.ByCssSelector("a[href='/viewcart.cfm']"))).click();
+                .until(ExpectedConditions.elementToBeClickable(new By.ByCssSelector("a[href='/viewcart.cfm']")));
+        WebElement viewCartButton = driver.findElement(new By.ByCssSelector("a[href='/viewcart.cfm']"));
+        viewCartButton.click();
         return new CartPage();
     }
 
